@@ -1,0 +1,4 @@
+---
+check_flag: "{{ download_root }}/to-notify-verifier-that-converged-in-check-mode"
+prop_type: "{{ lookup('ansible.builtin.env', 'ANSIBLE_PROP_TYPE',
+  default='simple_target') }}"
