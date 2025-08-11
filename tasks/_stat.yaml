@@ -1,0 +1,7 @@
+---
+- name: Temporary placeholder to avoid yaml error
+  ansible.builtin.debug:
+    msg: "Temporary placeholder to avoid yaml error"
+# - name: Gather the package facts
+#   ansible.builtin.package_facts:
+#     manager: auto

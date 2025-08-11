@@ -1,0 +1,20 @@
+---
+- name: Ensure systemd started service status
+  ansible.builtin.systemd:
+  args: "{{ i.systemd }}"
+  when: "i.systemd.state | default('none') in ['started', 'restarted', 'reloaded'] |
+    default(false)"
+  loop_control:
+    loop_var: i
+  loop: "{{ mesv_install_service | default([]) + mesv_config_service | default([]) }}"
+
+- name: Start service with role
+  ansible.builtin.include_role:
+    name: ansible-mega-launch
+  vars:
+    melau: "{{ i.launcher }}"
+  when: "i.launcher.start_enable | default(false) or i.launcher.start_mod_enable |
+    default(false)"
+  loop_control:
+    loop_var: i
+  loop: "{{ mesv_install_service | default([]) + mesv_config_service | default([]) }}"

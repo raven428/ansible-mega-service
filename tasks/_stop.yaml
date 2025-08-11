@@ -1,0 +1,21 @@
+---
+- name: Ensure systemd stopped service status
+  ansible.builtin.systemd:
+  args: "{{ i.systemd | combine({'state': 'stopped'}) }}"
+  when: "i.systemd.state | default('none') in ['started', 'restarted', 'reloaded'] |
+    default(false)"
+  loop_control:
+    loop_var: i
+  loop: "{{ mesv_install_service | default([]) + mesv_config_service | default([]) }}"
+
+- name: Stop service with role
+  ansible.builtin.include_role:
+    name: ansible-mega-launch
+  vars:
+    melau: "{{ i.launcher | combine({'start_enable': false, 'start_mod_enable': false,
+      'stop_enable': true}) }}"
+  when: "i.launcher.start_enable | default(false) or i.launcher.start_mod_enable |
+    default(false)"
+  loop_control:
+    loop_var: i
+  loop: "{{ mesv_install_service | default([]) + mesv_config_service | default([]) }}"
