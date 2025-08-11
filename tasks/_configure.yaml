@@ -1,0 +1,56 @@
+---
+- name: Configure templates upload
+  ansible.builtin.include_role:
+    name: ansible-mega-var
+    tasks_from: _template.yaml
+  loop_control:
+    loop_var: i
+  loop: "{{ mesv_templates2config | default([]) }}"
+
+- name: Configure files upload
+  ansible.builtin.include_role:
+    name: ansible-mega-var
+    tasks_from: _file.yaml
+  loop_control:
+    loop_var: i
+  loop: "{{ mesv_files2config | default([]) }}"
+
+- name: Configure rsync tree
+  ansible.builtin.include_role:
+    name: ansible-mega-var
+    tasks_from: _rsync.yaml
+  loop_control:
+    loop_var: i
+  loop: "{{ mesv_rsync2config | default([]) }}"
+
+- name: Configure systemd units
+  ansible.builtin.include_role:
+    name: ansible-mega-var
+    tasks_from: _systemd.yaml
+  loop_control:
+    loop_var: i
+  loop: "{{ mesv_systemd2config | default([]) }}" # DevSkim: ignore DS126858
+
+- name: Configure download files
+  ansible.builtin.include_role:
+    name: ansible-mega-var
+    tasks_from: _download.yaml
+  loop_control:
+    loop_var: i
+  loop: "{{ mesv_downloads2config | default([]) }}"
+
+- name: Configure launch shell
+  ansible.builtin.shell:
+    chdir: "{{ i.chdir | default(omit) }}"
+    cmd: "{{ i.cmd | default(omit) }}"
+    creates: "{{ i.creates | default(omit) }}"
+    executable: "{{ i.executable | default(omit) }}"
+    free_form: "{{ i.free_form | default(omit) }}"
+    removes: "{{ i.removes | default(omit) }}"
+    stdin: "{{ i.stdin | default(omit) }}"
+    stdin_add_newline: "{{ stdin_add_newline | default(omit) }}"
+  changed_when: "i.changed_when | default(true)"
+  check_mode: "{{ i.check_mode | default(omit) }}"
+  loop_control:
+    loop_var: i
+  loop: "{{ mesv_shell2config | default([]) }}"

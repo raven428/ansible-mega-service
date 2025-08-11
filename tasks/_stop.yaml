@@ -1,0 +1,6 @@
+---
+# meva_systemd4units or ansible_mega_launch if enabled
+- name: Register systemd service status
+  ansible.builtin.systemd:
+    name: "{{ service_name }}"
+  register: _service_systemd

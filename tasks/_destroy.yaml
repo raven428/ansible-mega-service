@@ -1,0 +1,18 @@
+---
+# meva_packages
+# meva_users2create
+# meva_groups2create
+
+# files:
+# meva_file2down
+# meva_systemd4units
+# meva_files2upload
+# meva_templates2upload
+
+# recursive:
+# meva_tree2rsync
+# meva_dirs2create
+- name: Register systemd service status
+  ansible.builtin.systemd:
+    name: "{{ service_name }}"
+  register: _service_systemd

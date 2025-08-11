@@ -1,0 +1,5 @@
+---
+- name: Register systemd service status
+  ansible.builtin.systemd:
+    name: "{{ service_name }}"
+  register: _service_systemd
