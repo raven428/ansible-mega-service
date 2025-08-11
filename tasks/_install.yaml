@@ -1,0 +1,14 @@
+---
+# add ansible.builtin.apt_repository and ansible.builtin.apt_key
+# by list if no current version or force set
+# ansible/roles/external/tenable/agent-install/tasks/install.yaml
+# meva_packages
+# meva_groups2create
+# meva_users2create
+# meva_dirs2create
+# meva_templates2upload
+# meva_files2upload
+# meva_tree2rsync
+# meva_systemd4units
+# meva_file2down
+# remove repo and keys by list if was added

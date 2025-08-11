@@ -1,0 +1,9 @@
+---
+- name: Register systemd service status
+  ansible.builtin.systemd:
+    name: "{{ systemd_service_name }}"
+  register: nessus_service_systemd
+  when: systemd_service_name | default('') != ''
+
+- name: Get packages facts
+  ansible.builtin.package_facts:
