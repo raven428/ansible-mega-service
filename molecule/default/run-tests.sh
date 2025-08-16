@@ -8,6 +8,9 @@ cd "${MY_PATH}/../.."
 source "${MY_PATH}/../prepare.sh"
 sce='default'
 LOG_PATH="/tmp/molecule-$(/usr/bin/env date '+%Y%m%d%H%M%S.%3N')"
+export ANSIBLE_ROLES_PATH="/tmp/ansible/roles2test"
 printf "\n\n\nmolecule [create] action\n"
 ANSIBLE_LOG_PATH="${LOG_PATH}-0create" \
-  ansible-docker.sh molecule -v create -s "${sce}"
+  ansible-docker.sh molecule -v create -s ${sce}
+ANSIBLE_LOG_PATH="${LOG_PATH}-2converge" \
+  ansible-docker.sh molecule -v converge -s ${sce}
