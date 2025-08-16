@@ -75,7 +75,17 @@
     "openlog",
     "Haan",
     "seealso",
-    "FURB"
+    "FURB",
+    "meva",
+    "mesv",
+    "nologin",
+    "pkgs",
+    "newhostkey",
+    "chdir",
+    "endfor",
+    "oneshot",
+    "syscall",
+    "autoremove"
   ],
   "enabled": true
 }
