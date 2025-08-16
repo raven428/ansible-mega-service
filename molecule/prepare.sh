@@ -55,3 +55,12 @@ export CONTENGI ANSIBLE_CONT_NAME ANSIBLE_IMAGE_NAME
     sleep 1
   done
 }
+deps_dir='deps/roles'
+[[ -d ${deps_dir} ]] || {
+  /usr/bin/env mkdir -vp ${deps_dir}
+  /usr/bin/env rm -vf "${deps_dir}/ansible-mega-service"
+  /usr/bin/env ln -sfv ../.. "${deps_dir}/ansible-mega-service"
+  for role in ansible-mega-var ansible-mega-launch; do
+    /usr/bin/env git clone https://github.com/raven428/${role}.git ${deps_dir}/${role}
+  done
+}
