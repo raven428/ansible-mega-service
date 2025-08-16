@@ -5,7 +5,7 @@
   gather_facts: false
   no_log: "{{ molecule_no_log }}"
   vars:
-    roles_dir: "{{ lookup('env', 'HOME') }}/.ansible/roles"
+    roles_dir: "{{ lookup('env', 'ANSIBLE_ROLES_PATH').split(':')[-1] }}"
   tasks:
     - name: Create molecule roles directory
       ansible.builtin.file:
@@ -15,10 +15,16 @@
         recurse: true
     - name: Symbolic link to role
       ansible.builtin.file:
-        src: /ansible
-        dest: "{{ roles_dir }}/ansible-mega-service"
+        src: "/ansible/deps/roles/{{ role }}"
+        dest: "{{ roles_dir }}/{{ role }}"
         state: link
         force: true
+      loop:
+        - "ansible-mega-var"
+        - "ansible-mega-launch"
+        - "ansible-mega-service"
+      loop_control:
+        loop_var: role
 
 - name: Prepare targets
   hosts: all

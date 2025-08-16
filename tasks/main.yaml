@@ -1,0 +1,23 @@
+---
+- name: Tags block
+  tags:
+    - service-all
+    - service-stop
+    - service-start
+    - service-reset
+    - service-deploy
+    - service-install
+    - service-destroy
+    - service-configure
+  block:
+    - name: Update service data
+      ansible.builtin.include_tasks: _stat.yaml
+
+    - name: Include according tasks
+      ansible.builtin.include_tasks: "_{{ item.name }}.yaml"
+      when: >
+        (skip_tags_list | length > 0 and
+        skip_tags_list | intersect(item.tags) | length == 0) or
+        (skip_tags_list | length == 0 and
+        ansible_run_tags | intersect(item.tags) | length > 0)
+      loop: "{{ includes }}"
