@@ -49,7 +49,7 @@
     removes: "{{ i.removes | default(omit) }}"
     stdin: "{{ i.stdin | default(omit) }}"
     stdin_add_newline: "{{ stdin_add_newline | default(omit) }}"
-  changed_when: "i.changed_when | default(true)"
+  changed_when: "i.changed_when | default(omit)"
   check_mode: "{{ i.check_mode | default(omit) }}"
   loop_control:
     loop_var: i
