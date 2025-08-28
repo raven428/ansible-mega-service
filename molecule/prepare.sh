@@ -66,4 +66,12 @@ deps_dir='deps/roles'
   for role in ansible-mega-var ansible-mega-launch; do
     /usr/bin/env git clone https://github.com/raven428/${role}.git ${deps_dir}/${role}
   done
+  (
+    cd ${deps_dir}/ansible-mega-var
+    git checkout updates-021
+  )
+  (
+    cd ${deps_dir}/ansible-mega-launch
+    git checkout updates-007
+  )
 }
