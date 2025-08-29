@@ -1,4 +1,118 @@
 ---
+unit_name: gaiad
+network_name: "launcher"
+download_root: "/tmp/molecule"
+local_bin_path: "/usr/local/bin"
+service_home: "/usr/local/{{ unit_name }}"
 check_flag: "{{ download_root }}/to-notify-verifier-that-converged-in-check-mode"
-prop_type: "{{ lookup('ansible.builtin.env', 'ANSIBLE_PROP_TYPE',
-  default='simple_target') }}"
+call_mode: "{{ lookup('ansible.builtin.env', 'ANSIBLE_CALL_MODE', default='split') }}"
+regexp_line: '.+ committed state .+ height=\d{2,} .+'
+skip_tags_list: ["service-start"]
+mesv_install_pkgs:
+  - name:
+      - git
+      - vim
+      - lsof
+      - nginx
+      - rsync
+    state: present
+    update_cache: true
+    install_recommends: false
+mesv_install_groups:
+  - name: "{{ unit_name }}"
+mesv_install_users:
+  - name: "{{ unit_name }}"
+    group: "{{ unit_name }}"
+    home: "{{ service_home }}"
+    shell: "/usr/sbin/nologin"
+    password_expire_warn: 3
+    create_home: false
+mesv_install_key2user:
+  - user: "{{ unit_name }}"
+    key: "ssh-ed25519
+      AAAAC3NzaC1lZDI1NTE5AAAAIGvDthv4Z9eqO2yljFz9rrZ8zibYPyNHrTKkbSR3FuuJ test"
+mesv_install_dirs:
+  - path: "{{ local_bin_path }}"
+    owner: "root"
+    group: "root"
+    mode: "0755"
+  - path: "{{ service_home | dirname }}"
+    owner: "root"
+    group: "root"
+    mode: "0755"
+  - path: "{{ service_home }}"
+    owner: "{{ unit_name }}"
+    group: "{{ unit_name }}"
+    mode: "0700"
+mesv_remove_entries:
+  - dest: "{{ service_home }}"
+    recurse: true
+  - dest: "{{ local_bin_path }}/{{ unit_name }}"
+    recurse: false
+mesv_install_templates:
+  - src: "templates/service-restricted.j2"
+    dest: "/etc/systemd/system/{{ unit_name }}.service"
+    mode: "0440"
+    force: "yes"
+    vars:
+      unit:
+        Description: "Node {{ unit_name }} service"
+      service:
+        Type: "simple"
+        Restart: "always"
+        User: "{{ unit_name }}"
+        Group: "{{ unit_name }}"
+        ReadWritePaths: "{{ service_home }}"
+        WorkingDirectory: "{{ service_home }}"
+        SyslogIdentifier: "{{ unit_name }}"
+        EnvironmentFile: "-/etc/default/{{ unit_name }}"
+        ExecStart: "{{ local_bin_path }}/{{ unit_name }} --home={{ service_home }}
+          start"
+mesv_install_service:
+  - systemd:
+      name: "{{ unit_name }}"
+      force: true
+      masked: false
+      enabled: false
+      daemon_reload: true
+    launcher:
+      # start_enable: true
+      start_mod_enable: true
+      service_name: "{{ unit_name }}"
+      process_pattern: '.*\/bin\/{{ unit_name }} .*'
+      port_list:
+        - 9090
+        - 9091
+        - 26656
+        - 26657
+      log_regexp: "{{ regexp_line }}"
+      max_rescues: 2
+      check_retries: 11
+      required_checks: 2
+mesv_install_downloads:
+  - url: "https://github.com/cosmos/gaia/releases/\
+      download/v14.2.0/gaiad-v14.2.0-linux-amd64"
+    dest: "{{ local_bin_path }}"
+    creates: "{{ unit_name }}"
+    file_mode: "0755"
+mesv_install_shell:
+  - executable: /bin/bash
+    creates: "{{ service_home }}/config/genesis.json"
+    cmd: "{{ local_bin_path }}/{{ unit_name }} --home='{{ service_home }}' init
+      --chain-id='{{ network_name }}' '{{ network_name }} validator'"
+    become: true
+    become_user: "{{ unit_name }}"
+    changed_when: "_task_result.rc == 0 and _task_result.start is not none"
+mesv_config_downloads: |
+  {%- set result = [] -%}
+  {%- for f in ['priv_validator_key.json', 'genesis.json', 'config.toml'] -%}
+    {%- do result.append({
+      'url': 'https://github.com/raven428/ansible-mega-launch/releases' ~
+        '/download/molecule-default/' ~ f,
+      'dest': service_home ~ '/config',
+      'owner': unit_name,
+      'group': unit_name,
+      'creates': f,
+    }) -%}
+  {%- endfor -%}
+  {{ result }}
