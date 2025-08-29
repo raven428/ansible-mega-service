@@ -1,0 +1,28 @@
+---
+includes:
+  - name: install
+    tags:
+      - all
+      - service-all
+      - service-deploy
+      - service-install
+  - name: configure
+    tags:
+      - all
+      - service-all
+      - service-deploy
+      - service-configure
+  - name: start
+    tags:
+      - all
+      - service-all
+      - service-start
+  - name: stop
+    tags:
+      - service-stop
+      - service-reset
+      - service-destroy
+  - name: destroy
+    tags:
+      - service-reset
+      - service-destroy
