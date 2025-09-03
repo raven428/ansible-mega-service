@@ -53,4 +53,8 @@
         loop_var: role
 - name: Prepare targets
   hosts: all
-  tasks: []
+  tasks:
+    - name: Install requirements
+      ansible.builtin.apt:
+        name: gpg
+        update_cache: true
