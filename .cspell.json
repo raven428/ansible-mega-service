@@ -85,7 +85,10 @@
     "endfor",
     "oneshot",
     "syscall",
-    "autoremove"
+    "autoremove",
+    "alvistack",
+    "keyrings",
+    "getent"
   ],
   "enabled": true
 }
