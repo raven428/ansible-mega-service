@@ -10,9 +10,6 @@
     - service-destroy
     - service-configure
   block:
-    - name: Update service data
-      ansible.builtin.include_tasks: _stat.yaml
-
     - name: Include corresponding tasks
       ansible.builtin.include_tasks: "_{{ file.name }}.yaml"
       when: "

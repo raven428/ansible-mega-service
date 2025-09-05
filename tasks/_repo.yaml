@@ -1,0 +1,26 @@
+---
+- name: Apt dry run
+  ansible.builtin.apt:
+  args: "{{ i.package }}"
+  check_mode: true
+  register: apt_check
+  ignore_errors: true
+
+- name: Block to install apt packages
+  when: "apt_check.changed or apt_check.failed"
+  block:
+    - name: Add apt key
+      ansible.builtin.apt_key:
+      args: "{{ i.repo_key }}"
+      register: _temp_result
+      until: _temp_result is succeeded
+      retries: 3
+      delay: 1
+
+    - name: Add apt repo
+      ansible.builtin.apt_repository:
+      args: "{{ i.repo_file }}"
+      register: _temp_result
+      until: _temp_result is succeeded
+      retries: 3
+      delay: 1

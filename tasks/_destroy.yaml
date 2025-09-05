@@ -4,8 +4,21 @@
     name: ansible-mega-var
     tasks_from: _apt.yaml
   vars:
-    meva_packages: "{{ mesv_install_pkgs | default([]) | map('combine',
-      {'state': 'absent', 'autoremove': true, 'purge': true}) | list }}"
+    meva_packages: "{{ mesv_install_pkgs | default([]) | selectattr('package',
+      'defined') | map(attribute='package') | map('combine', {'state': 'absent',
+      'autoremove': true, 'purge': true}) | list }}"
+
+- name: Remove apt keys
+  ansible.builtin.apt_key:
+  args: "{{ i.repo_key }}"
+  register: _temp_result
+  until: _temp_result is succeeded
+  retries: 3
+  delay: 1
+  loop_control:
+    loop_var: i
+  loop: "{{ mesv_install_pkgs | default([]) | map('combine', {'repo_key': {'state':
+    'absent'}}, recursive=True) | list }}"
 
 - name: Destroy users keys
   ansible.builtin.include_role:
