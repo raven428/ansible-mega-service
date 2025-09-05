@@ -1,0 +1,26 @@
+---
+- name: Check service unit
+  ansible.builtin.systemd:
+    name: "{{ i.systemd.name | default(i.systemd.service) | default(i.systemd.unit) }}"
+  register: service_check
+  ignore_errors: true
+
+- name: Stop service if exists
+  # strict check for service-stop and relaxed for others
+  when: "'service-stop' in ansible_run_tags or 'Type' in service_check.status and
+    'LoadError' not in service_check.status"
+  block:
+    - name: Ensure systemd stopped service status
+      ansible.builtin.systemd:
+      args: "{{ i.systemd | combine({'state': 'stopped'}) }}"
+      when: "i.systemd.state | default('none') in ['started', 'restarted', 'reloaded'] |
+        default(false)"
+
+    - name: Stop service with role
+      ansible.builtin.include_role:
+        name: ansible-mega-launch
+      vars:
+        melau: "{{ i.launcher | combine({'start_enable': false, 'start_mod_enable': false,
+          'stop_enable': true}) }}"
+      when: "i.launcher.start_enable | default(false) or i.launcher.start_mod_enable |
+        default(false)"

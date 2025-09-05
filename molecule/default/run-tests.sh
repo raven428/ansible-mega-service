@@ -25,3 +25,5 @@ ANSIBLE_LOG_PATH="${LOG_PATH}-6converge-stop" \
   ansible-docker.sh molecule -v converge -s ${sce} -- -t service-gaiad,service-stop
 ANSIBLE_LOG_PATH="${LOG_PATH}-7converge-destroy" \
   ansible-docker.sh molecule -v converge -s ${sce} -- -t service-gaiad,service-destroy
+ANSIBLE_LOG_PATH="${LOG_PATH}-8converge-reset" \
+  ansible-docker.sh molecule -v converge -s ${sce} -- -t service-gaiad,service-reset
