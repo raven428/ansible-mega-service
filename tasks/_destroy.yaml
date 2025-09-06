@@ -1,4 +1,22 @@
 ---
+- name: Destroy check services
+  ansible.builtin.systemd:
+    name: "{{ service.systemd.name }}"
+  register: services_statuses
+  loop_control:
+    loop_var: service
+  loop: "{{ mesv_install_service }}"
+
+- name: Destroy fail running
+  ansible.builtin.fail:
+    msg: "Stop [{{ active_services | join(',') }}] services first"
+  when: "active_services | length > 0"
+  ignore_errors: "{{ ansible_check_mode }}"
+  vars:
+    active_services: "{{ services_statuses.results | selectattr('status.ActiveState',
+      'equalto', 'active') | selectattr('status.SubState', 'equalto', 'running') |
+      map(attribute='service.systemd.name') | list }}"
+
 - name: Destroy packages remove
   ansible.builtin.include_role:
     name: ansible-mega-var
