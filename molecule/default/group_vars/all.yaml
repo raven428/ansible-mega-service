@@ -5,7 +5,8 @@ download_root: "/tmp/molecule"
 local_bin_path: "/usr/local/bin"
 service_home: "/usr/local/{{ unit_name }}"
 check_flag: "{{ download_root }}/to-notify-verifier-that-converged-in-check-mode"
-call_mode: "{{ lookup('ansible.builtin.env', 'ANSIBLE_CALL_MODE', default='split') }}"
+call_mode: "{{ lookup('ansible.builtin.env', 'ANSIBLE_CALL_MODE', default='full') }}"
+prop_mode: "{{ lookup('ansible.builtin.env', 'ANSIBLE_PROP_MODE', default='none') }}"
 regexp_line: '.+ committed state .+ height=\d{2,} .+'
 skip_tags_list: ["service-start"]
 mesv_install_pkgs:

@@ -1,0 +1,24 @@
+---
+- name: Block for failures
+  block:
+    - name: Maintenance gaiad service
+      ansible.builtin.include_role:
+        name: ansible-mega-service
+      when: "prop_mode == 'fail-stop'"
+      tags: [service-stop]
+
+    - name: Maintenance gaiad service
+      ansible.builtin.include_role:
+        name: ansible-mega-service
+      when: "prop_mode == 'fail-destroy'"
+      tags: [service-destroy]
+  rescue:
+    - name: Set fact to success converge
+      ansible.builtin.set_fact:
+        rescue_happened: true
+
+- name: Assert rescue happened
+  ansible.builtin.assert:
+    that: "rescue_happened | default(true)"
+    fail_msg: Rescue isn't happened when [{{ prop_mode }}] should failure
+    success_msg: Rescue happened when [{{ prop_mode }}] as it should be

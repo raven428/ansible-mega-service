@@ -20,4 +20,13 @@
     - name: Maintenance gaiad service
       ansible.builtin.include_role:
         name: ansible-mega-service
+      when: "prop_mode == 'none'"
+      tags: [service-gaiad]
+
+    - name: Check failure cases for stop manifests
+      ansible.builtin.include_tasks:
+        file: "includes/fail-test.yaml"
+        apply:
+          tags: [service-gaiad]
+      when: "prop_mode.startswith('fail-')"
       tags: [service-gaiad]
