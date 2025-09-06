@@ -20,7 +20,7 @@ includes:
   - name: stop
     tags:
       - service-stop
-      - service-destroy
+      - service-reset
   - name: destroy
     tags:
       - service-reset
