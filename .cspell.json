@@ -88,7 +88,8 @@
     "autoremove",
     "alvistack",
     "keyrings",
-    "getent"
+    "getent",
+    "equalto"
   ],
   "enabled": true
 }
