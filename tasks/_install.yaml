@@ -27,16 +27,32 @@
   vars:
     meva_key2user: "{{ mesv_install_key2user | default([]) }}"
 
-# add ansible.builtin.apt_repository and ansible.builtin.apt_key
-# by list if no current version or force set
-# ansible/roles/external/tenable/agent-install/tasks/install.yaml
+- name: Install required repositories
+  ansible.builtin.include_tasks: _repo.yaml
+  loop_control:
+    loop_var: i
+  loop: "{{ mesv_install_pkgs | default([]) | map('combine', {'repo_key': {'state':
+    'present'}, 'repo_file': {'state': 'present'}}, recursive=True) | list }}"
+
 - name: Install packages install
   ansible.builtin.include_role:
     name: ansible-mega-var
     tasks_from: _apt.yaml
   vars:
-    meva_packages: "{{ mesv_install_pkgs | default([]) }}"
-# remove repo and keys by list if was added
+    meva_packages: "{{ mesv_install_pkgs | selectattr('package', 'defined') |
+      map(attribute='package') | list }}"
+
+- name: Remove repositories if any
+  ansible.builtin.apt_repository:
+  args: "{{ i.repo_file }}"
+  register: _temp_result
+  until: _temp_result is succeeded
+  retries: 3
+  delay: 1
+  loop_control:
+    loop_var: i
+  loop: "{{ mesv_install_pkgs | default([]) | map('combine', {'repo_file': {'state':
+    'absent', 'update_cache': false}}, recursive=True) | list }}"
 
 - name: Install templates upload
   ansible.builtin.include_role:
