@@ -2,8 +2,6 @@
 - name: Verify downloaded files
   hosts: all
   gather_facts: false
-  vars:
-    prop_mode: "{{ lookup('ansible.builtin.env', 'ANSIBLE_PROP_MODE', default='none') }}"
   tasks:
     - name: Refresh service facts
       ansible.builtin.service_facts:

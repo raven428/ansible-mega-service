@@ -9,21 +9,57 @@ source "${MY_PATH}/../prepare.sh"
 sce='default'
 LOG_PATH="/tmp/molecule-$(/usr/bin/env date '+%Y%m%d%H%M%S.%3N')"
 printf "\n\n\nmolecule [create] action\n"
-ANSIBLE_LOG_PATH="${LOG_PATH}-0create" \
+ANSIBLE_LOG_PATH="${LOG_PATH}-00create" \
   ansible-docker.sh molecule -v create -s ${sce}
-ANSIBLE_LOG_PATH="${LOG_PATH}-1converge" \
-  ansible-docker.sh molecule -v converge -s ${sce}
-ANSIBLE_LOG_PATH="${LOG_PATH}-2idempotence" \
-  ansible-docker.sh molecule -v idempotence -s ${sce}
-ANSIBLE_LOG_PATH="${LOG_PATH}-3converge-check" \
-  ansible-docker.sh molecule -v converge -s ${sce} -- --check
-ANSIBLE_LOG_PATH="${LOG_PATH}-4idempotence-check" \
-  ansible-docker.sh molecule -v idempotence -s ${sce} -- --check
-ANSIBLE_LOG_PATH="${LOG_PATH}-5converge-start" \
-  ansible-docker.sh molecule -v converge -s ${sce} -- -t service-gaiad,service-start
-ANSIBLE_LOG_PATH="${LOG_PATH}-6converge-stop" \
-  ansible-docker.sh molecule -v converge -s ${sce} -- -t service-gaiad,service-stop
-ANSIBLE_LOG_PATH="${LOG_PATH}-7converge-destroy" \
-  ansible-docker.sh molecule -v converge -s ${sce} -- -t service-gaiad,service-destroy
-ANSIBLE_LOG_PATH="${LOG_PATH}-8converge-reset" \
-  ansible-docker.sh molecule -v converge -s ${sce} -- -t service-gaiad,service-reset
+n=1
+run_group() {
+  local tag="${1}"
+  local last="${tag:-}"
+  local prefix="${last##*-}"
+  [[ -n "${prefix}" ]] && prefix="-${prefix}"
+  [[ "${tag}" != '' && "${last##*,}" != 'all' ]] && {
+    printf "\n\n\nmolecule [converge] %s check\n" "${tag}"
+    ANSIBLE_LOG_PATH="${LOG_PATH}-$(printf %02d $n)converge${prefix}-check" \
+      ansible-docker.sh molecule -v converge -s "${sce}" -- --check -t "$tag"
+    ((n++))
+  }
+  for mode in action check; do
+    args=''
+    if [[ "${mode}" == 'check' ]]; then
+      if [[ -z "${tag:-}" ]]; then
+        args=" -- --check"
+      else
+        args=" -- -t ${tag} --check"
+      fi
+    elif [[ -n "${tag:-}" ]]; then
+      args=" -- -t $tag"
+    fi
+    for stage in converge idempotence; do
+      printf "\n\n\nmolecule [%s] %s %s\n" "${stage}" "${mode}" "${tag}"
+      # shellcheck disable=2086
+      ANSIBLE_LOG_PATH="${LOG_PATH}-$(printf %02d $n)${stage}${prefix}-${mode}" \
+        ansible-docker.sh molecule -v "${stage}" -s "${sce}"${args}
+      ((n++))
+    done
+  done
+}
+run_group '' ''
+run_group "service-gaiad,service-start"
+run_group "service-gaiad,service-stop"
+run_group "service-gaiad,service-destroy"
+printf "\n\n\nmolecule [recreate] all-start\n"
+ANSIBLE_LOG_PATH="${LOG_PATH}-$(printf %02d "$n")destroy2recreate" \
+  ansible-docker.sh molecule -v destroy -s ${sce}
+((n++))
+ANSIBLE_LOG_PATH="${LOG_PATH}-$(printf %02d "$n")recreate4all-start" \
+  ansible-docker.sh molecule -v create -s ${sce}
+((n++))
+run_group "service-gaiad,service-start,all"
+printf "\n\n\nmolecule [converge] service-destroy fail\n"
+ANSIBLE_PROP_MODE='fail-destroy' \
+  ANSIBLE_LOG_PATH="${LOG_PATH}-$(printf '%02d' "$n")converge-destroy" \
+  ansible-docker.sh molecule -v converge -s "${sce}" -- -t service-gaiad,service-destroy
+((n++))
+run_group "service-gaiad,service-reset"
+export ANSIBLE_PROP_MODE='fail-stop'
+run_group "service-gaiad,service-stop"
