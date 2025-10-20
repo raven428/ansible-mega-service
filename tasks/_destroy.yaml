@@ -19,7 +19,7 @@
 
 - name: Destroy packages remove
   ansible.builtin.include_role:
-    name: ansible-mega-var
+    name: raven428.mega_var
     tasks_from: _apt.yaml
   vars:
     meva_packages: "{{ mesv_install_pkgs | default([]) | selectattr('package',
@@ -40,7 +40,7 @@
 
 - name: Destroy users keys
   ansible.builtin.include_role:
-    name: ansible-mega-var
+    name: raven428.mega_var
     tasks_from: _key.yaml
   vars:
     meva_key2user: "{{ mesv_install_key2user | default([]) | map('combine',
@@ -48,7 +48,7 @@
 
 - name: Destroy users remove
   ansible.builtin.include_role:
-    name: ansible-mega-var
+    name: raven428.mega_var
     tasks_from: _user.yaml
   vars:
     meva_users2create: "{{ mesv_install_users | default([]) | map('combine',
@@ -56,7 +56,7 @@
 
 - name: Destroy groups remove
   ansible.builtin.include_role:
-    name: ansible-mega-var
+    name: raven428.mega_var
     tasks_from: _group.yaml
   vars:
     meva_groups2create: "{{ mesv_install_groups | default([]) | map('combine',
@@ -64,7 +64,7 @@
 
 - name: Destroy dirs remove
   ansible.builtin.include_role:
-    name: ansible-mega-var
+    name: raven428.mega_var
     tasks_from: _file.yaml
   vars:
     meva_dirs2create: "{{ (mesv_install_templates | default([]) + mesv_config_templates |

@@ -10,7 +10,7 @@
 
 - name: Start service with role
   ansible.builtin.include_role:
-    name: ansible-mega-launch
+    name: raven428.mega_launch
   vars:
     melau: "{{ i.launcher }}"
   when: "i.launcher.start_enable | default(false) or i.launcher.start_mod_enable |

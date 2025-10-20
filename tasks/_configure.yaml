@@ -1,28 +1,28 @@
 ---
 - name: Configure templates upload
   ansible.builtin.include_role:
-    name: ansible-mega-var
+    name: raven428.mega_var
     tasks_from: _template.yaml
   vars:
     meva_templates2upload: "{{ mesv_config_templates | default([]) }}"
 
 - name: Configure files upload
   ansible.builtin.include_role:
-    name: ansible-mega-var
+    name: raven428.mega_var
     tasks_from: _copy.yaml
   vars:
     meva_dirs2create: "{{ mesv_config_files | default([]) }}"
 
 - name: Configure rsync tree
   ansible.builtin.include_role:
-    name: ansible-mega-var
+    name: raven428.mega_var
     tasks_from: _rsync.yaml
   vars:
     meva_tree2rsync: "{{ mesv_config_rsync | default([]) }}"
 
 - name: Configure systemd units
   ansible.builtin.include_role:
-    name: ansible-mega-var
+    name: raven428.mega_var
     tasks_from: _systemd.yaml
   vars:
     meva_systemd4units: >- # DevSkim: ignore DS126858
@@ -31,7 +31,7 @@
 
 - name: Configure download files
   ansible.builtin.include_role:
-    name: ansible-mega-var
+    name: raven428.mega_var
     tasks_from: _download.yaml
   loop_control:
     loop_var: i
@@ -39,7 +39,7 @@
 
 - name: Configure launch shell
   ansible.builtin.include_role:
-    name: ansible-mega-var
+    name: raven428.mega_var
     tasks_from: _shell.yaml
   vars:
     meva_run4shell: "{{ mesv_config_shell | default([]) }}"
