@@ -56,13 +56,10 @@ CONT_BRIDGE_NAME='bridge'
     sleep 1
   done
 }
-export ANSIBLE_ROLES_PATH="/tmp/ansible/roles2test"
+export ANSIBLE_ROLES_PATH='/tmp/ansible/roles2test'
 deps_dir='deps/roles'
 [[ -d ${deps_dir} ]] || {
   /usr/bin/env mkdir -vp ${deps_dir}
   /usr/bin/env rm -vf "${deps_dir}/ansible-mega-service"
   /usr/bin/env ln -sfv ../.. "${deps_dir}/ansible-mega-service"
-  for role in ansible-mega-var ansible-mega-launch; do
-    /usr/bin/env git clone https://github.com/raven428/${role}.git ${deps_dir}/${role}
-  done
 }
