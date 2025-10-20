@@ -18,7 +18,7 @@
 
     - name: Stop service with role
       ansible.builtin.include_role:
-        name: ansible-mega-launch
+        name: raven428.mega_launch
       vars:
         melau: "{{ i.launcher | combine({'start_enable': false, 'start_mod_enable': false,
           'stop_enable': true}) }}"

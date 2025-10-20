@@ -7,32 +7,6 @@
   vars:
     roles_dir: "{{ lookup('env', 'ANSIBLE_ROLES_PATH').split(':')[-1] }}"
   tasks:
-    # - name: Install git
-    #   ansible.builtin.apt:
-    #     name: git
-    #     state: present
-    #     update_cache: true
-    #     install_recommends: false
-    #   register: _install_packages
-    #   until: _install_packages is succeeded
-    #   retries: 2
-    #   delay: 1
-    # - name: Create molecule roles directory
-    #   ansible.builtin.file:
-    #     path: "{{ roles_dir }}"
-    #     state: directory
-    #     recurse: true
-    #     force: true
-    # - name: Clone depend roles
-    #   ansible.builtin.git:
-    #     name: "https://github.com/raven428/{{ role }}.git"
-    #     dest: "{{ roles_dir }}/{{ role }}"
-    #     accept_newhostkey: true
-    #   loop:
-    #     - "ansible-mega-var"
-    #     - "ansible-mega-launch"
-    #   loop_control:
-    #     loop_var: role
     - name: Create molecule roles directory
       ansible.builtin.file:
         path: "{{ roles_dir }}"
@@ -46,8 +20,6 @@
         state: link
         force: true
       loop:
-        - "ansible-mega-var"
-        - "ansible-mega-launch"
         - "ansible-mega-service"
       loop_control:
         loop_var: role

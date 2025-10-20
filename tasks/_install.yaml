@@ -1,28 +1,28 @@
 ---
 - name: Install groups create
   ansible.builtin.include_role:
-    name: ansible-mega-var
+    name: raven428.mega_var
     tasks_from: _group.yaml
   vars:
     meva_groups2create: "{{ mesv_install_groups | default([]) }}"
 
 - name: Install users create
   ansible.builtin.include_role:
-    name: ansible-mega-var
+    name: raven428.mega_var
     tasks_from: _user.yaml
   vars:
     meva_users2create: "{{ mesv_install_users | default([]) }}"
 
 - name: Install dirs create
   ansible.builtin.include_role:
-    name: ansible-mega-var
+    name: raven428.mega_var
     tasks_from: _file.yaml
   vars:
     meva_dirs2create: "{{ mesv_install_dirs | default([]) }}"
 
 - name: Install users keys
   ansible.builtin.include_role:
-    name: ansible-mega-var
+    name: raven428.mega_var
     tasks_from: _key.yaml
   vars:
     meva_key2user: "{{ mesv_install_key2user | default([]) }}"
@@ -36,7 +36,7 @@
 
 - name: Install packages install
   ansible.builtin.include_role:
-    name: ansible-mega-var
+    name: raven428.mega_var
     tasks_from: _apt.yaml
   vars:
     meva_packages: "{{ mesv_install_pkgs | selectattr('package', 'defined') |
@@ -56,28 +56,28 @@
 
 - name: Install templates upload
   ansible.builtin.include_role:
-    name: ansible-mega-var
+    name: raven428.mega_var
     tasks_from: _template.yaml
   vars:
     meva_templates2upload: "{{ mesv_install_templates | default([]) }}"
 
 - name: Install files upload
   ansible.builtin.include_role:
-    name: ansible-mega-var
+    name: raven428.mega_var
     tasks_from: _copy.yaml
   vars:
     meva_files2upload: "{{ mesv_install_files | default([]) }}"
 
 - name: Install rsync tree
   ansible.builtin.include_role:
-    name: ansible-mega-var
+    name: raven428.mega_var
     tasks_from: _rsync.yaml
   vars:
     meva_tree2rsync: "{{ mesv_install_rsync | default([]) }}"
 
 - name: Install systemd units
   ansible.builtin.include_role:
-    name: ansible-mega-var
+    name: raven428.mega_var
     tasks_from: _systemd.yaml
   vars:
     meva_systemd4units: >- # DevSkim: ignore DS126858
@@ -86,7 +86,7 @@
 
 - name: Install download files
   ansible.builtin.include_role:
-    name: ansible-mega-var
+    name: raven428.mega_var
     tasks_from: _download.yaml
   loop_control:
     loop_var: i
@@ -94,7 +94,7 @@
 
 - name: Install launch shell
   ansible.builtin.include_role:
-    name: ansible-mega-var
+    name: raven428.mega_var
     tasks_from: _shell.yaml
   vars:
     meva_run4shell: "{{ mesv_install_shell | default([]) }}"
