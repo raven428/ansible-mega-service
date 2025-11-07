@@ -26,6 +26,28 @@
       'defined') | map(attribute='package') | map('combine', {'state': 'absent',
       'autoremove': true, 'purge': true}) | list }}"
 
+- name: Remove apt repositories
+  ansible.builtin.apt_repository:
+  args: "{{ i.repo_file }}"
+  register: _temp_result
+  until: _temp_result is succeeded
+  retries: 3
+  delay: 1
+  loop_control:
+    loop_var: i
+  loop: >-
+    {%- set result = [] -%}
+    {%- for item in mesv_install_pkgs | default([]) -%}
+      {%- set new_item = item | combine({}, recursive=True) -%}
+      {%- if 'repo_file' in item -%}
+        {%- set new_item = new_item | combine({'repo_file': item.repo_file |
+          combine({'state': 'absent', 'update_cache': false}, recursive=True)},
+          recursive=True) -%}
+        {%- set _ = result.append(new_item) -%}
+      {%- endif -%}
+    {%- endfor -%}
+    {{ result }}
+
 - name: Remove apt keys
   ansible.builtin.apt_key:
   args: "{{ i.repo_key }}"
@@ -35,8 +57,17 @@
   delay: 1
   loop_control:
     loop_var: i
-  loop: "{{ mesv_install_pkgs | default([]) | map('combine', {'repo_key': {'state':
-    'absent'}}, recursive=True) | list }}"
+  loop: >-
+    {%- set result = [] -%}
+    {%- for item in mesv_install_pkgs | default([]) -%}
+      {%- set new_item = item | combine({}, recursive=True) -%}
+      {%- if 'repo_key' in item -%}
+        {%- set new_item = new_item | combine({'repo_key': item.repo_key |
+        combine({'state': 'absent'}, recursive=True)}, recursive=True) -%}
+        {%- set _ = result.append(new_item) -%}
+      {%- endif -%}
+    {%- endfor -%}
+    {{ result }}
 
 - name: Destroy users keys
   ansible.builtin.include_role:
