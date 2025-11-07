@@ -12,14 +12,8 @@ skip_tags_list: ["service-start"]
 mesv_install_pkgs:
   - package:
       name:
-        - git
-        - vim
-        - lsof
-        - nginx
-        - rsync
         - grafana=8.5.10
       state: present
-      update_cache: true
       install_recommends: false
     repo_key:
       url: "https://packages.grafana.com/gpg.key"
@@ -27,6 +21,17 @@ mesv_install_pkgs:
       repo: "deb https://packages.grafana.com\
         /oss/deb stable main"
       filename: grafana.list
+      update_cache: true
+  - package:
+      name:
+        - git
+        - vim
+        - lsof
+        - nginx
+        - rsync
+      state: present
+      update_cache: false
+      install_recommends: false
 mesv_install_groups:
   - name: "{{ unit_name }}"
 mesv_install_users:

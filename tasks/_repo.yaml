@@ -10,6 +10,7 @@
   when: "apt_check.changed or apt_check.failed"
   block:
     - name: Add apt key
+      when: "'repo_key' in i"
       ansible.builtin.apt_key:
       args: "{{ i.repo_key }}"
       register: _temp_result
@@ -18,6 +19,7 @@
       delay: 1
 
     - name: Add apt repo
+      when: "'repo_file' in i"
       ansible.builtin.apt_repository:
       args: "{{ i.repo_file }}"
       register: _temp_result
