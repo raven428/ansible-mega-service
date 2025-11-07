@@ -3,7 +3,7 @@ dependency:
   name: galaxy
   enabled: true
   options:
-    role-file: molecule/default/requirements.yaml
+    role-file: meta/requirements.yml
 driver:
   # see molecule_docker/playbooks for example
   name: docker
