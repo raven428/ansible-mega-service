@@ -39,8 +39,8 @@
     name: raven428.mega_var
     tasks_from: _apt.yaml
   vars:
-    meva_packages: "{{ mesv_install_pkgs | selectattr('package', 'defined') |
-      map(attribute='package') | list }}"
+    meva_packages: "{{ mesv_install_pkgs | default([]) | selectattr('package',
+      'defined') | map(attribute='package') | list }}"
 
 - name: Remove repositories if any
   ansible.builtin.apt_repository:
