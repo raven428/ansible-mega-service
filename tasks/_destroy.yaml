@@ -5,7 +5,7 @@
   register: services_statuses
   loop_control:
     loop_var: service
-  loop: "{{ mesv_install_service }}"
+  loop: "{{ mesv_install_service | default([]) + mesv_config_service | default([]) }}"
 
 - name: Destroy fail running
   ansible.builtin.fail:
