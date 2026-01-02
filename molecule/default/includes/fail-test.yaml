@@ -19,6 +19,6 @@
 
 - name: Assert rescue happened
   ansible.builtin.assert:
-    that: "rescue_happened | default(true)"
+    that: "rescue_happened | default(false)"
     fail_msg: Rescue isn't happened when [{{ prop_mode }}] should failure
     success_msg: Rescue happened when [{{ prop_mode }}] as it should be
