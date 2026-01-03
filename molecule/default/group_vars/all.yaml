@@ -83,13 +83,14 @@ mesv_install_templates:
         EnvironmentFile: "-/etc/default/{{ unit_name }}"
         ExecStart: "{{ local_bin_path }}/{{ unit_name }} --home={{ service_home }}
           start"
-mesv_install_service:
+service_for_install:
   - systemd:
       name: "{{ unit_name }}"
       force: true
       masked: false
       enabled: false
       daemon_reload: true
+      when: "{{ not ansible_check_mode }}"
     launcher:
       # start_enable: true
       start_mod_enable: true

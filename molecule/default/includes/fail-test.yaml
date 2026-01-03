@@ -4,12 +4,16 @@
     - name: Maintenance gaiad service
       ansible.builtin.include_role:
         name: ansible-mega-service
+      vars:
+        mesv_install_service: "{{ service_for_install }}"
       when: "prop_mode == 'fail-stop'"
       tags: [service-stop]
 
     - name: Maintenance gaiad service
       ansible.builtin.include_role:
         name: ansible-mega-service
+      vars:
+        mesv_install_service: "{{ service_for_install }}"
       when: "prop_mode == 'fail-destroy'"
       tags: [service-destroy]
   rescue:
