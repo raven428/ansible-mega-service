@@ -43,7 +43,9 @@
         {%- set new_item = new_item | combine({'repo_file': item.repo_file |
         combine({'state': 'present'}, recursive=True)}, recursive=True) -%}
       {%- endif -%}
-      {%- set _ = result.append(new_item) -%}
+      {%- if 'repo_key' in item or 'repo_file' in item -%}
+        {%- set _ = result.append(new_item) -%}
+      {%- endif -%}
     {%- endfor -%}
     {{ result }}
 

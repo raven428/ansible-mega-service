@@ -4,12 +4,16 @@
     - name: Maintenance gaiad service
       ansible.builtin.include_role:
         name: ansible-mega-service
+      vars:
+        mesv_install_service: "{{ service_for_install }}"
       when: "prop_mode == 'fail-stop'"
       tags: [service-stop]
 
     - name: Maintenance gaiad service
       ansible.builtin.include_role:
         name: ansible-mega-service
+      vars:
+        mesv_install_service: "{{ service_for_install }}"
       when: "prop_mode == 'fail-destroy'"
       tags: [service-destroy]
   rescue:
@@ -19,6 +23,6 @@
 
 - name: Assert rescue happened
   ansible.builtin.assert:
-    that: "rescue_happened | default(true)"
+    that: "rescue_happened | default(false)"
     fail_msg: Rescue isn't happened when [{{ prop_mode }}] should failure
     success_msg: Rescue happened when [{{ prop_mode }}] as it should be

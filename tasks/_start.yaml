@@ -1,7 +1,8 @@
 ---
 - name: Ensure systemd started service status
   ansible.builtin.systemd:
-  args: "{{ i.systemd }}"
+  args: "{{ i.systemd | dict2items | rejectattr('key', 'equalto', 'when') |
+    items2dict | combine({'state': 'stopped'}) }}"
   when: "i.systemd.state | default('none') in ['started', 'restarted', 'reloaded'] |
     default(false)"
   loop_control:

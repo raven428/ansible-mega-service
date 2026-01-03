@@ -17,10 +17,24 @@
       when: not ansible_check_mode
       tags: [always]
   tasks:
-    - name: Maintenance gaiad service
+    - name: Maintenance gaiad service with launcher
       ansible.builtin.include_role:
         name: ansible-mega-service
+      vars:
+        mesv_install_service: "{{ service_for_install }}"
       when: "prop_mode == 'none'"
+      tags: [service-gaiad]
+
+    - name: Maintenance gaiad service with systemd
+      ansible.builtin.include_role:
+        name: ansible-mega-service
+      vars:
+        # remove launcher key from dicts of list to maintain with plain systemd
+        mesv_install_service: "{{ service_for_install | map('dict2items') |
+          map('rejectattr', 'key', 'equalto', 'launcher') | map('items2dict') |
+          map('combine', {'systemd': {'state': 'started'}}, recursive=True) |
+          list }}"
+      when: "prop_mode == 'systemd'"
       tags: [service-gaiad]
 
     - name: Check failure cases for stop manifests

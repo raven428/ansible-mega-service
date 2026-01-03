@@ -11,16 +11,17 @@
     'LoadError' not in service_check.status"
   block:
     - name: Ensure systemd stopped service status
-      ansible.builtin.systemd:
-      args: "{{ i.systemd | combine({'state': 'stopped'}) }}"
       when: "i.systemd.state | default('none') in ['started', 'restarted', 'reloaded'] |
         default(false)"
+      ansible.builtin.systemd:
+      args: "{{ i.systemd | dict2items | rejectattr('key', 'equalto', 'when') |
+        items2dict | combine({'state': 'stopped'}) }}"
 
     - name: Stop service with role
+      when: "i.launcher.start_enable | default(false) or i.launcher.start_mod_enable |
+        default(false)"
       ansible.builtin.include_role:
         name: raven428.mega_launch
       vars:
         melau: "{{ i.launcher | combine({'start_enable': false, 'start_mod_enable': false,
           'stop_enable': true}) }}"
-      when: "i.launcher.start_enable | default(false) or i.launcher.start_mod_enable |
-        default(false)"

@@ -60,6 +60,10 @@ ANSIBLE_PROP_MODE='fail-destroy' \
   ANSIBLE_LOG_PATH="${LOG_PATH}-$(printf '%02d' "$n")converge-destroy" \
   ansible-docker.sh molecule -v converge -s "${sce}" -- -t service-gaiad,service-destroy
 ((n++))
+export ANSIBLE_PROP_MODE='systemd'
+run_group "service-gaiad,service-stop"
+run_group "service-gaiad,service-start"
+export ANSIBLE_PROP_MODE='none'
 run_group "service-gaiad,service-reset"
 export ANSIBLE_PROP_MODE='fail-stop'
 run_group "service-gaiad,service-stop"
