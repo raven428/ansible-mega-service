@@ -17,6 +17,6 @@ The role perform deploy packages or files of a service with configuration files 
 - make tag and send to release:
 
   ```bash
-  export VER='1.0.5' && git checkout master && git pull
+  export VER='1.0.6' && git checkout master && git pull
   git tag -fm $(git branch --sho) ${VER} && git push --force origin $(git describe)
   ```
