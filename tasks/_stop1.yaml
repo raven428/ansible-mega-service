@@ -12,7 +12,7 @@
   block:
     - name: Ensure systemd stopped service status
       when: "i.systemd.state | default('none') in ['started', 'restarted', 'reloaded'] |
-        default(false)"
+        default(false) and i.systemd.when | default(true)"
       ansible.builtin.systemd:
       args: "{{ i.systemd | dict2items | rejectattr('key', 'equalto', 'when') |
         items2dict | combine({'state': 'stopped'}) }}"
