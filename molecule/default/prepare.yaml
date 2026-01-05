@@ -28,5 +28,15 @@
   tasks:
     - name: Install requirements
       ansible.builtin.apt:
-        name: gpg
+        name:
+          - gpg
+          - gpg-agent
         update_cache: true
+        install_recommends: false
+      poll: 5
+      async: 77
+      register: _temp_result
+      until: _temp_result is succeeded
+      timeout: 333
+      retries: 5
+      delay: 1
