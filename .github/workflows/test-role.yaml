@@ -19,8 +19,8 @@ jobs:
       fail-fast: false
       matrix:
         call_mode:
-          - full
-          # - split
+          - def1
+          - def2
         ansible_ver:
           - "06"
           - "07"

@@ -43,27 +43,26 @@ run_group() {
     done
   done
 }
-run_group '' ''
-run_group "service-gaiad,service-start"
-run_group "service-gaiad,service-stop"
-run_group "service-gaiad,service-destroy"
-printf "\n\n\nmolecule [recreate] all-start\n"
-ANSIBLE_LOG_PATH="${LOG_PATH}-$(printf %02d "$n")destroy2recreate" \
-  ansible-docker.sh molecule -v destroy -s ${sce}
-((n++))
-ANSIBLE_LOG_PATH="${LOG_PATH}-$(printf %02d "$n")recreate4all-start" \
-  ansible-docker.sh molecule -v create -s ${sce}
-((n++))
-run_group "service-gaiad,service-start,all"
-printf "\n\n\nmolecule [converge] service-destroy fail\n"
-ANSIBLE_PROP_MODE='fail-destroy' \
-  ANSIBLE_LOG_PATH="${LOG_PATH}-$(printf '%02d' "$n")converge-destroy" \
-  ansible-docker.sh molecule -v converge -s "${sce}" -- -t service-gaiad,service-destroy
-((n++))
-export ANSIBLE_PROP_MODE='systemd'
-run_group "service-gaiad,service-stop"
-run_group "service-gaiad,service-start"
-export ANSIBLE_PROP_MODE='none'
-run_group "service-gaiad,service-reset"
-export ANSIBLE_PROP_MODE='fail-stop'
-run_group "service-gaiad,service-stop"
+if [[ "${ANSIBLE_CALL_MODE:-empty}" == 'def1' ]]; then
+  run_group ''
+  run_group 'service-gaiad,service-start'
+  run_group 'service-gaiad,service-stop'
+  run_group 'service-gaiad,service-destroy'
+elif [[ "${ANSIBLE_CALL_MODE:-empty}" == 'def2' ]]; then
+  run_group 'service-gaiad,service-start,all'
+  printf "\n\n\nmolecule [converge] service-destroy fail\n"
+  ANSIBLE_PROP_MODE='fail-destroy' \
+    ANSIBLE_LOG_PATH="${LOG_PATH}-$(printf '%02d' "$n")converge-destroy" \
+    ansible-docker.sh molecule -v converge -s "${sce}" -- -t service-gaiad,service-destroy
+  ((n++))
+  export ANSIBLE_PROP_MODE='systemd'
+  run_group 'service-gaiad,service-stop'
+  run_group 'service-gaiad,service-start'
+  export ANSIBLE_PROP_MODE='none'
+  run_group 'service-gaiad,service-reset'
+  export ANSIBLE_PROP_MODE='fail-stop'
+  run_group 'service-gaiad,service-stop'
+else
+  echo "unknown [${ANSIBLE_CALL_MODE:-empty}] in ANSIBLE_CALL_MODE env"
+  exit 1
+fi
