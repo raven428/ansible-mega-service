@@ -51,6 +51,7 @@ jobs:
       - name: lint the repo
         env:
           BRA: master
+          USE_LINTIGNORE: true
         run: |
           curl -sL \
           https://raw.githubusercontent.com/raven428/container-images/refs/heads/${{
