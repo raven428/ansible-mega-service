@@ -35,10 +35,6 @@
     {%- set result = [] -%}
     {%- for item in mesv_install_pkgs | default([]) -%}
       {%- set new_item = item | combine({}, recursive=True) -%}
-      {%- if 'repo_key' in item -%}
-        {%- set new_item = new_item | combine({'repo_key': item.repo_key |
-        combine({'state': 'present'}, recursive=True)}, recursive=True) -%}
-      {%- endif -%}
       {%- if 'repo_file' in item -%}
         {%- set new_item = new_item | combine({'repo_file': item.repo_file |
         combine({'state': 'present'}, recursive=True)}, recursive=True) -%}

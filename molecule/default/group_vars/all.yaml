@@ -9,6 +9,7 @@ call_mode: "{{ lookup('ansible.builtin.env', 'ANSIBLE_CALL_MODE', default='full'
 prop_mode: "{{ lookup('ansible.builtin.env', 'ANSIBLE_PROP_MODE', default='none') }}"
 regexp_line: '.+ committed state .+ height=\d{2,} .+'
 skip_tags_list: ["service-start"]
+key_path: "/usr/share/keyrings/grafana.gpg"
 mesv_install_pkgs:
   - package:
       name:
@@ -16,10 +17,13 @@ mesv_install_pkgs:
       state: present
       install_recommends: false
     repo_key:
-      url: "https://packages.grafana.com/gpg.key"
+      src: "files/grafana.gpg"
+      dest: "{{ key_path }}"
+      force: true
+      follow: false
     repo_file:
-      repo: "deb https://packages.grafana.com\
-        /oss/deb stable main"
+      repo: "deb [signed-by={{ key_path }}] https://packages.grafana.com/oss/deb stable
+        main"
       filename: grafana.list
       update_cache: true
   - package:

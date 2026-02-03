@@ -11,7 +11,7 @@
   block:
     - name: Add apt key
       when: "'repo_key' in i"
-      ansible.builtin.apt_key:
+      ansible.builtin.copy:
       args: "{{ i.repo_key }}"
       register: _temp_result
       until: _temp_result is succeeded
