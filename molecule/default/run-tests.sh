@@ -63,6 +63,7 @@ elif [[ "${ANSIBLE_CALL_MODE:-empty}" == 'def2' ]]; then
   export ANSIBLE_PROP_MODE='fail-stop'
   run_group 'service-gaiad,service-stop'
 else
+  # run_group ''
   echo "unknown [${ANSIBLE_CALL_MODE:-empty}] in ANSIBLE_CALL_MODE env"
   exit 1
 fi

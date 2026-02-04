@@ -49,25 +49,16 @@
     {{ result }}
 
 - name: Remove apt keys
-  ansible.builtin.apt_key:
-  args: "{{ i.repo_key }}"
+  ansible.builtin.file:
+    dest: "{{ item.repo_key.dest }}"
+    state: "absent"
   register: _temp_result
   until: _temp_result is succeeded
   retries: 3
   delay: 1
   loop_control:
-    loop_var: i
-  loop: >-
-    {%- set result = [] -%}
-    {%- for item in mesv_install_pkgs | default([]) -%}
-      {%- set new_item = item | combine({}, recursive=True) -%}
-      {%- if 'repo_key' in item -%}
-        {%- set new_item = new_item | combine({'repo_key': item.repo_key |
-        combine({'state': 'absent'}, recursive=True)}, recursive=True) -%}
-        {%- set _ = result.append(new_item) -%}
-      {%- endif -%}
-    {%- endfor -%}
-    {{ result }}
+    loop_var: item
+  loop: "{{ mesv_install_pkgs | default([]) | selectattr('repo_key', 'defined') | list }}"
 
 - name: Destroy users keys
   ansible.builtin.include_role:
