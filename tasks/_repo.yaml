@@ -13,6 +13,7 @@
       when: "'repo_key' in i"
       ansible.builtin.copy:
       args: "{{ i.repo_key }}"
+      check_mode: false
       register: _temp_result
       until: _temp_result is succeeded
       retries: 3
@@ -22,6 +23,7 @@
       when: "'repo_file' in i"
       ansible.builtin.apt_repository:
       args: "{{ i.repo_file }}"
+      check_mode: false
       register: _temp_result
       until: _temp_result is succeeded
       retries: 3
