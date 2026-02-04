@@ -120,6 +120,7 @@ mesv_install_shell:
     creates: "{{ service_home }}/config/genesis.json"
     cmd: "{{ local_bin_path }}/{{ unit_name }} --home='{{ service_home }}' init
       --chain-id='{{ network_name }}' '{{ network_name }} validator'"
+    when: "not ansible_check_mode"
     become: true
     become_user: "{{ unit_name }}"
     changed_when: "_task_result.rc == 0 and _task_result.start is not none"
