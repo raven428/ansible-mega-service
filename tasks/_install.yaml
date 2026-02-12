@@ -104,7 +104,8 @@
   vars:
     meva_systemd4units: >- # DevSkim: ignore DS126858
       {{ mesv_install_service | default([]) | selectattr('systemd', 'defined') |
-      map(attribute='systemd') | list }}
+      map(attribute='systemd') | map('dict2items') | map('rejectattr', 'key', 'equalto',
+      'state') | map('items2dict') | list }}
 
 - name: Install download files
   ansible.builtin.include_role:

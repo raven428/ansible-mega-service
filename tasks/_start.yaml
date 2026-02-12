@@ -4,8 +4,6 @@
   args: "{{ i.systemd | dict2items | rejectattr('key', 'equalto', 'when') |
     items2dict | combine({'state': 'started'}) }}"
   when:
-    - "i.systemd.state | default('none') in ['started', 'restarted', 'reloaded'] |
-      default(false)"
     - "i.systemd.when | default(true)"
     - "not ansible_check_mode"
   loop_control:
