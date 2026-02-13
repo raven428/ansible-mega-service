@@ -26,6 +26,14 @@
       loop_control:
         loop_var: file
       loop:
+        - name: stop
+          tags:
+            - service-stop
+            - service-reset
+        - name: destroy
+          tags:
+            - service-reset
+            - service-destroy
         - name: install
           tags:
             - all
@@ -43,11 +51,3 @@
             - all
             - service-all
             - service-start
-        - name: stop
-          tags:
-            - service-stop
-            - service-reset
-        - name: destroy
-          tags:
-            - service-reset
-            - service-destroy
