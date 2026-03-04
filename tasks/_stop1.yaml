@@ -12,8 +12,9 @@
   block:
     - name: Ensure systemd stopped service status
       ansible.builtin.systemd:
-      args: "{{ i.systemd | dict2items | rejectattr('key', 'equalto', 'when') |
-        items2dict | combine({'state': 'stopped'}) }}"
+      args: "{{ i.systemd | dict2items | rejectattr('key', 'equalto', 'changed_when') |
+        rejectattr('key', 'equalto', 'when') | items2dict | combine({'state':
+        'stopped'}) }}"
 
     - name: Stop service with role
       when: "i.launcher.start_enable | default(false) or i.launcher.start_mod_enable |

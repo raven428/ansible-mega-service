@@ -1,11 +1,13 @@
 ---
 - name: Ensure systemd started service status
   ansible.builtin.systemd:
-  args: "{{ i.systemd | dict2items | rejectattr('key', 'equalto', 'when') |
-    items2dict | combine({'state': 'started'}) }}"
+  args: "{{ i.systemd | dict2items | rejectattr('key', 'equalto', 'changed_when') |
+    rejectattr('key', 'equalto', 'when') | items2dict | combine({'state': 'started'}) }}"
   when:
     - "i.systemd.when | default(true)"
     - "not ansible_check_mode"
+  register: _task_result
+  changed_when: "i.systemd.changed_when | default(_task_result.changed)"
   loop_control:
     loop_var: i
   loop: "{{ mesv_install_service | default([]) + mesv_config_service | default([]) }}"
