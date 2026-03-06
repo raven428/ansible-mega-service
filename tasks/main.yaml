@@ -20,8 +20,34 @@
         ansible_run_tags | intersect(file.tags) | length > 0 or
 
         'all' not in ansible_run_tags and ansible_run_tags | intersect(file.tags) |
-        length > 0
+        length > 0 and (mesv_service_tag is not defined or mesv_service_tag in
+        ansible_run_tags)
         "
       loop_control:
         loop_var: file
-      loop: "{{ includes }}"
+      loop:
+        - name: stop
+          tags:
+            - service-stop
+            - service-reset
+        - name: destroy
+          tags:
+            - service-reset
+            - service-destroy
+        - name: install
+          tags:
+            - all
+            - service-all
+            - service-deploy
+            - service-install
+        - name: configure
+          tags:
+            - all
+            - service-all
+            - service-deploy
+            - service-configure
+        - name: start
+          tags:
+            - all
+            - service-all
+            - service-start

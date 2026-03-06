@@ -17,12 +17,16 @@ run_group() {
   local last="${tag:-}"
   local prefix="${last##*-}"
   [[ -n "${prefix}" ]] && prefix="-${prefix}"
-  [[ "${tag}" != '' && "${last##*,}" != 'all' ]] && {
-    printf "\n\n\nmolecule [converge] %s check\n" "${tag}"
-    ANSIBLE_LOG_PATH="${LOG_PATH}-$(printf %02d $n)converge${prefix}-check" \
-      ansible-docker.sh molecule -v converge -s "${sce}" -- --check -t "$tag"
-    ((n++))
-  }
+  if [[ -z "${tag:-}" ]]; then
+    args=" -- --check"
+  else
+    args=" -- -t ${tag} --check"
+  fi
+  printf "\n\n\nmolecule [converge] %s check\n" "${tag:-empty}"
+  # shellcheck disable=2086
+  ANSIBLE_LOG_PATH="${LOG_PATH}-$(printf %02d $n)converge${prefix}-check" \
+    ansible-docker.sh molecule -v converge -s "${sce}"${args}
+  ((n++))
   for mode in action check; do
     args=''
     if [[ "${mode}" == 'check' ]]; then
