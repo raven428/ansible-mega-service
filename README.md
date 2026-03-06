@@ -18,5 +18,5 @@ The role perform deploy packages or files of a service with configuration files 
 
   ```bash
   git checkout master && git pull
-  git tag -fm $(git branch --sho) 1.0.9 && git push --force origin $(git describe)
+  git tag -fm $(git branch --sho) 1.0.10 && git push --force origin $(git describe)
   ```
