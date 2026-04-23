@@ -1,6 +1,5 @@
 ---
 - name: raven428.mega_var
-  src: "git+https://github.com/raven428/ansible-mega-var.git"
   version: 1.0.6
 - name: raven428.mega_launch
   version: 1.0.1

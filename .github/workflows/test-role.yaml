@@ -8,6 +8,25 @@ on:
   pull_request:
   schedule:
     - cron: "11 11 * * 1"
+  # checkov:skip=CKV_GHA_7
+  workflow_dispatch:
+    inputs:
+      mega_var_ref:
+        description: "ansible-mega-var branch/tag to test against"
+        required: false
+        default: ""
+      mini_vault_ref:
+        description: "ansible-mini-vault branch/tag to test against"
+        required: false
+        default: ""
+      mega_launch_ref:
+        description: "ansible-launch-var branch/tag to test against"
+        required: false
+        default: ""
+      mega_service_ref:
+        description: "ansible-service-var branch/tag to test against"
+        required: false
+        default: ""
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
@@ -29,7 +48,7 @@ jobs:
           - "10"
           - "11"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
           submodules: true
@@ -38,13 +57,15 @@ jobs:
           ANSIBLE_CALL_MODE: ${{ matrix.call_mode }}
           IMAGE_NAME: ansible-${{ matrix.ansible_ver }}:latest
           ANSIBLE_GITHUB_TOKEN: ${{ secrets.LOCAL_WS_TOKEN }}
+          MEGA_VAR_REF: ${{ inputs.mega_var_ref }}
         run: molecule/default/run-tests.sh
   linters:
     name: linters
     timeout-minutes: 11
     runs-on: ubuntu-24.04
+    if: github.event_name != 'workflow_dispatch'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
           submodules: true
@@ -63,8 +84,9 @@ jobs:
     name: MegaLinter
     timeout-minutes: 11
     runs-on: ubuntu-latest
+    if: github.event_name != 'workflow_dispatch'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
           submodules: true
@@ -72,6 +94,30 @@ jobs:
         uses: oxsecurity/megalinter@v9
         env:
           VALIDATE_ALL_CODEBASE: true
+  mini_vault:
+    name: test mini-vault role
+    timeout-minutes: 44
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: trigger and wait for mini-vault workflow
+        env:
+          GH_TOKEN: ${{ secrets.LOCAL_WS_TOKEN }}
+          MEGA_VAR_REF: ${{ inputs.mega_var_ref || 'master' }}
+          MINI_VAULT_REF: ${{ inputs.mini_vault_ref || 'master' }}
+          MEGA_LAUNCH_REF: ${{ inputs.mega_launch_ref || 'master' }}
+          MEGA_SERVICE_REF: ${{ github.head_ref || github.ref_name }}
+        run: |
+          gh workflow run test-role.yaml --repo raven428/ansible-mini-vault \
+            --ref "${MINI_VAULT_REF}" --field mega_var_ref="${MEGA_VAR_REF}" \
+            --field mega_service_ref="${MEGA_SERVICE_REF}" \
+            --field mega_launch_ref="${MEGA_LAUNCH_REF}"
+          sleep 111
+          run_id=$(gh run list --repo raven428/ansible-mini-vault \
+            --workflow test-role.yaml --event workflow_dispatch --limit 1 \
+            --json databaseId --jq '.[0].databaseId'
+          )
+          gh run watch "${run_id}" --repo raven428/ansible-mini-vault --exit-status
   all-green:
     name: all green
     timeout-minutes: 5
@@ -79,8 +125,9 @@ jobs:
     needs:
       - default
       - linters
+      - mini_vault
       - MegaLinter
-    if: always()
+    if: github.event_name == 'pull_request'
     permissions:
       checks: read
     steps:

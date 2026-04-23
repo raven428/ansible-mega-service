@@ -65,3 +65,17 @@ deps_dir='deps/roles'
   /usr/bin/env rm -vf "${deps_dir}/ansible-mega-service"
   /usr/bin/env ln -sfv ../.. "${deps_dir}/ansible-mega-service"
 }
+# When called from ansible-mega-var CI with a specific commit SHA, override
+# the galaxy-installed version with that exact commit.
+if [[ -n "${MEGA_VAR_REF:-}" ]]; then
+  mega_var_dir="${deps_dir}/raven428.mega_var"
+  /usr/bin/env rm -rf "${mega_var_dir}"
+  /usr/bin/env git clone --branch "${MEGA_VAR_REF}" \
+    'https://github.com/raven428/ansible-mega-var.git' "${mega_var_dir}"
+fi
+if [[ -n "${MEGA_LAUNCH_REF:-}" ]]; then
+  mega_launch_dir="${deps_dir}/raven428.mega_launch"
+  /usr/bin/env rm -rf "${mega_launch_dir}"
+  /usr/bin/env git clone --branch "${MEGA_LAUNCH_REF}" \
+    'https://github.com/raven428/ansible-mega-launch.git' "${mega_launch_dir}"
+fi
