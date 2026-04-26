@@ -3,6 +3,7 @@ dependency:
   name: galaxy
   enabled: true
   options:
+    force: true
     role-file: meta/requirements.yml
 driver:
   # see molecule_docker/playbooks for example
