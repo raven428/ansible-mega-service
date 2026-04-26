@@ -107,7 +107,7 @@ jobs:
           MINI_VAULT_REF: ${{ inputs.mini_vault_ref || 'master' }}
           MEGA_LAUNCH_REF: ${{ inputs.mega_launch_ref || 'master' }}
           MEGA_SERVICE_REF: ${{ github.head_ref || github.ref_name }}
-        run: '"gh workflow run test-role.yaml --field mega_var_ref="${MEGA_VAR_REF}"
+        run: 'gh workflow run test-role.yaml --field mega_var_ref="${MEGA_VAR_REF}"
           --field mega_launch_ref="${MEGA_LAUNCH_REF}" --ref "${MINI_VAULT_REF}" --field
           mega_service_ref="${MEGA_SERVICE_REF}" --repo raven428/ansible-mini-vault'
   all-green:
