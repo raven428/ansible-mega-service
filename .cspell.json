@@ -95,6 +95,8 @@
     "TERMIOS",
     "tmpfs",
     "Tunables",
+    "zizmor",
+    "ZIZMOR",
     "userns"
   ],
   "enabled": true
