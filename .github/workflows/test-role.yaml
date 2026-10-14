@@ -14,18 +14,22 @@ on:
       mega_var_ref:
         description: "ansible-mega-var branch/tag to test against"
         required: false
+        type: string
         default: ""
       mini_vault_ref:
         description: "ansible-mini-vault branch/tag to test against"
         required: false
+        type: string
         default: ""
       mega_launch_ref:
         description: "ansible-launch-var branch/tag to test against"
         required: false
+        type: string
         default: ""
       mega_service_ref:
         description: "ansible-service-var branch/tag to test against"
         required: false
+        type: string
         default: ""
 permissions: {}
 env:
@@ -104,7 +108,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
     steps:
-      - name: trigger and wait for mini-vault workflow
+      - name: trigger for mega-service role test
         env:
           GH_TOKEN: ${{ secrets.LOCAL_WS_TOKEN }}
           MEGA_VAR_REF: ${{ inputs.mega_var_ref || 'master' }}
