@@ -1,6 +1,6 @@
 # Generic service maintenance
 
-[![molecule](https://github.com/raven428/ansible-mega-service/actions/workflows/test-role.yaml/badge.svg)](https://github.com/raven428/ansible-mega-service/actions/workflows/test-role.yaml)
+[![molecule](https://github.com/raven428/ansible-mega-service/actions/workflows/repo-test.yaml/badge.svg)](https://github.com/raven428/ansible-mega-service/actions/workflows/repo-test.yaml)
 
 The role perform deploy packages or files of a service with configuration files from templates with ability to start, stop and destroy all of these with certain Ansible tags
 
@@ -18,5 +18,5 @@ The role perform deploy packages or files of a service with configuration files 
 
   ```bash
   git checkout master && git pull
-  git tag -fm $(git branch --sho) 1.0.13 && git push --force origin $(git describe)
+  git tag -fm $(git branch --sho) 1.0.14 && git push --force origin $(git describe)
   ```

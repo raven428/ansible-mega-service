@@ -1,4 +1,5 @@
 ---
+# cspell:ignore autoremove equalto mesv meva pkgs selectattr
 - name: Destroy check services
   ansible.builtin.systemd:
     name: "{{ service.systemd.name }}"
@@ -26,6 +27,7 @@
       'defined') | map(attribute='package') | map('combine', {'state': 'absent',
       'autoremove': true, 'purge': true}) | list }}"
 
+# jscpd:ignore-start
 - name: Remove apt repositories
   ansible.builtin.apt_repository:
   args: "{{ i.repo_file }}"
@@ -48,6 +50,7 @@
     {%- endfor -%}
     {{ result }}
 
+# jscpd:ignore-end
 - name: Remove apt keys
   ansible.builtin.file:
     dest: "{{ item.repo_key.dest }}"

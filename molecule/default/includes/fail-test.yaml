@@ -1,4 +1,5 @@
 ---
+# cspell:ignore gaiad mesv
 - name: Block for failures
   block:
     - name: Maintenance gaiad service

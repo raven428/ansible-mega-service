@@ -1,4 +1,5 @@
 ---
+# cspell:ignore equalto mesv meva pkgs rejectattr selectattr
 - name: Install groups create
   ansible.builtin.include_role:
     name: raven428.mega_var
@@ -27,6 +28,7 @@
   vars:
     meva_key2user: "{{ mesv_install_key2user | default([]) }}"
 
+# jscpd:ignore-start
 - name: Install required repositories
   ansible.builtin.include_tasks: _repo.yaml
   loop_control:
@@ -45,6 +47,7 @@
     {%- endfor -%}
     {{ result }}
 
+# jscpd:ignore-end
 - name: Install packages install
   ansible.builtin.include_role:
     name: raven428.mega_var
@@ -53,6 +56,7 @@
     meva_packages: "{{ mesv_install_pkgs | default([]) | selectattr('package',
       'defined') | map(attribute='package') | list }}"
 
+# jscpd:ignore-start
 - name: Remove repositories if any
   ansible.builtin.apt_repository:
   args: "{{ i.repo_file }}"
@@ -76,6 +80,7 @@
     {%- endfor -%}
     {{ result }}
 
+# jscpd:ignore-end
 - name: Install templates upload
   ansible.builtin.include_role:
     name: raven428.mega_var
