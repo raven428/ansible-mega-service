@@ -1,4 +1,5 @@
 ---
+# cspell:ignore equalto gaiad mesv rejectattr
 - name: Perform actions from inventory variables
   hosts: all
   pre_tasks:

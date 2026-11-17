@@ -1,4 +1,5 @@
 ---
+# cspell:ignore equalto melau mesv rejectattr
 - name: Ensure systemd started service status
   ansible.builtin.systemd:
   args: "{{ i.systemd | dict2items | rejectattr('key', 'equalto', 'changed_when') |

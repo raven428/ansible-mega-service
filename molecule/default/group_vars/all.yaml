@@ -1,4 +1,5 @@
 ---
+# cspell:ignore gaiad keyrings mesv pkgs
 unit_name: gaiad
 network_name: "launcher"
 download_root: "/tmp/molecule"

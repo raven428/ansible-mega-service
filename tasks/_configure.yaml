@@ -1,4 +1,5 @@
 ---
+# cspell:ignore equalto mesv meva rejectattr selectattr
 - name: Configure templates upload
   ansible.builtin.include_role:
     name: raven428.mega_var
