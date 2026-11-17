@@ -1,4 +1,5 @@
 ---
+# cspell:ignore equalto melau rejectattr
 - name: Check service unit
   ansible.builtin.systemd:
     name: "{{ i.systemd.name | default(i.systemd.service) | default(i.systemd.unit) }}"
